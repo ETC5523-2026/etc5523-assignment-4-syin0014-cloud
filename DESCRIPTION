@@ -1,0 +1,19 @@
+Package: syinexplore
+Title: What the Package Does (One Line, Title Case)
+Version: 0.1.0
+Authors@R: 
+    person("Siyuan", "Yin", , "syin0014@student.monash.edu", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Config/roxygen2/version: 8.1.1
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports: 
+    bslib,
+    dplyr,
+    ggplot2,
+    shiny
+Suggests: 
+    knitr,
+    quarto
+VignetteBuilder: quarto
