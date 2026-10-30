@@ -12,6 +12,7 @@ year_limits <- range(collections$year)
 
 ui <- page_sidebar(
   title = "Trash Wheel Explorer",
+  fillable = FALSE,
 
   theme = bs_theme(
     version = 5,
