@@ -4,6 +4,10 @@
 `syinexplore` contains prepared Trash Wheel data, a summary function
 and an interactive Shiny app.
 
+## Documentation website
+
+[Read the package documentation and user guide](https://etc5523-2026.github.io/etc5523-assignment-4-syin0014-cloud/)
+
 ## Purpose and intended users
 
 Trash Wheel Explorer is designed for environmental volunteers and
@@ -39,9 +43,9 @@ machine performance.
 Install the package from GitHub:
 
 ```r
-install.packages("devtools")
+install.packages("remotes")
 
-devtools::install_github(
+remotes::install_github(
   "ETC5523-2026/etc5523-assignment-4-syin0014-cloud"
 )
 ```

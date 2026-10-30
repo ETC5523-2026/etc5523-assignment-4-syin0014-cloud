@@ -1,4 +1,20 @@
-url: ~
+url: https://etc5523-2026.github.io/etc5523-assignment-4-syin0014-cloud/
+
 template:
   bootstrap: 5
 
+reference:
+- title: "Launch and summarise"
+  contents:
+  - run_app
+  - summarise_data
+
+- title: "Included data"
+  contents:
+  - trash_items
+
+articles:
+- title: "User guide"
+  navbar: ~
+  contents:
+  - getting-started
