@@ -1,19 +1,35 @@
 Package: syinexplore
-Title: What the Package Does (One Line, Title Case)
+Title: Explore Baltimore Trash Wheel Collections
 Version: 0.1.0
-Authors@R: 
-    person("Siyuan", "Yin", , "syin0014@student.monash.edu", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R:
+    person(
+        "Siyuan", "Yin",
+        email = "syin0014@student.monash.edu",
+        role = c("aut", "cre")
+    )
+Description: Provides prepared data and an interactive Shiny app for
+    exploring rubbish collected by Baltimore's Trash Wheel family.
+    Users can select collection sites and years to compare estimated
+    item counts per recorded collection. Includes a summary function
+    and documentation explaining the data and its limitations.
 License: MIT + file LICENSE
-Config/roxygen2/version: 8.1.1
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-Imports: 
+Depends:
+    R (>= 4.1.0)
+Imports:
     bslib,
     dplyr,
     ggplot2,
     shiny
-Suggests: 
+Suggests:
+    janitor,
     knitr,
-    quarto
+    lubridate,
+    quarto,
+    readr,
+    tidyr,
+    usethis
+LazyData: true
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: quarto
+Config/roxygen2/version: 8.1.1

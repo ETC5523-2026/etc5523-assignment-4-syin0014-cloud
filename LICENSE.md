@@ -1,6 +1,7 @@
 # MIT License
 
-Copyright (c) 2026 Siyuan Yin
+YEAR: 2026
+COPYRIGHT HOLDER: Siyuan Yin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
