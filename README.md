@@ -1,8 +1,6 @@
-
 # syinexplore
 
-`syinexplore` contains prepared Trash Wheel data, a summary function
-and an interactive Shiny app.
+`syinexplore` contains prepared Trash Wheel data, a summary function and an interactive Shiny app.
 
 ## Documentation website
 
@@ -10,39 +8,30 @@ and an interactive Shiny app.
 
 ## Purpose and intended users
 
-Trash Wheel Explorer is designed for environmental volunteers and
-readers interested in cleaner waterways.
+Trash Wheel Explorer is designed for environmental volunteers and readers interested in cleaner waterways.
 
 The app helps users investigate this question:
 
-**At selected collection sites and times, which rubbish categories
-have the highest estimated item counts per recorded collection?**
+**At selected collection sites and times, which rubbish categories have the highest estimated item counts per recorded collection?**
 
-Users can select Trash Wheels and years. A comparison plot and summary
-table update using the same selected records.
+Users can select Trash Wheels and years. Summary cards, written results, a comparison chart and a table update using the selected records.
 
 ## Data
 
-The package includes `trash_items`, prepared from the Trash Wheel
-Collection Data distributed by TidyTuesday on 5 March 2024.
+The package includes `trash_items`, prepared from the Trash Wheel Collection Data distributed by TidyTuesday on 5 March 2024.
 
-The original data come from Baltimore Healthy Harbor / Mr. Trash Wheel.
-The prepared table contains 6,951 rows and seven columns. Each row
-represents one rubbish category in one dumpster collection.
+The original data come from Baltimore Healthy Harbor / Mr. Trash Wheel. The prepared table contains 6,951 rows and seven columns. Each row represents one rubbish category in one dumpster collection.
 
-- [TidyTuesday data and descriptions](https://github.com/rfordatascience/tidytuesday/tree/main/data/2024/2024-03-05)
-- [Original project: Mr. Trash Wheel](https://www.mrtrashwheel.com/)
+-   [TidyTuesday data and descriptions](https://github.com/rfordatascience/tidytuesday/tree/main/data/2024/2024-03-05)
+-   [Original project: Mr. Trash Wheel](https://www.mrtrashwheel.com/)
 
-Item counts are estimates. Missing counts are not zero. Trash Wheels
-have different collection histories and reporting coverage, so these
-records should not be used directly to rank pollution levels or
-machine performance.
+Item counts are estimates. Missing counts are not zero. Trash Wheels have different collection histories and reporting coverage, so these records should not be used directly to rank pollution levels or machine performance.
 
 ## Installation
 
 Install the package from GitHub:
 
-```r
+``` r
 install.packages("remotes")
 
 remotes::install_github(
@@ -52,22 +41,33 @@ remotes::install_github(
 
 ## Launch the app
 
-```r
+``` r
 library(syinexplore)
 
 run_app()
 ```
 
-Choose one or more Trash Wheels and a range of years. Longer bars
-indicate higher estimated item counts per recorded collection.
+Choose one or more Trash Wheels and a year range. Both end years are included, and results update automatically.
 
-The table reports all selected collection records, the number with
-a reported count, and the mean calculated from those reported counts.
-A missing mean indicates that no counts were reported for that group.
+The three summary cards show:
+
+-   **Devices with records:** how many selected devices have matching collection records.
+-   **Collection records:** the number of matching collections, counting each collection once per device.
+-   **Years selected:** the chosen year or year range.
+
+Use **Compare categories** to view the chart and **Check the values** to view the table. Both tabs use the same selected records.
+
+Longer bars indicate higher estimated item counts per recorded collection. Chart panels use the same horizontal scale.
+
+The table reports all selected collection records, the number with a reported item count, and the mean calculated from those reported counts. Collections and Recorded collections are equal when no counts are missing for that category.
+
+"Not recorded" means no item counts were reported for that group. It does not mean zero.
+
+To stop the app in RStudio, click Stop in the Console or press Esc.
 
 ## Use the summary function
 
-```r
+``` r
 library(syinexplore)
 
 summarise_data(
@@ -77,36 +77,36 @@ summarise_data(
 )
 ```
 
-`summarise_data()` filters the records and returns a summary for each
-selected Trash Wheel and rubbish category. The app uses this function.
+`summarise_data()` filters the records and returns a summary for each selected Trash Wheel and rubbish category. The app uses this function.
+
+The result includes:
+
+-   `name`: the Trash Wheel.
+-   `trash_type`: the rubbish category.
+-   `collections`: all selected collection records for that category.
+-   `recorded_collections`: records with a reported item count.
+-   `mean_count`: the mean estimated item count among recorded collections.
+
+Missing counts are excluded from the mean. If all counts in a group are missing, its mean is `NA`.
 
 ## Reproduce the package data
 
 From the repository root, run:
 
-```r
+``` r
 source("data-raw/prepare_data.R")
 ```
 
-The script reads the specified TidyTuesday CSV file, cleans the column
-names, converts collection dates and reshapes item counts into a long
-table. It saves the result as `data/trash_items.rda`.
+The script reads the specified TidyTuesday CSV file, cleans column names, converts collection dates, selects the fields used by the app and reshapes item counts into a long table. It saves the result as `data/trash_items.rda`.
 
-Running the preparation script requires an internet connection.
-Launching the app uses the prepared package data and does not read
-an external CSV file.
+Running the preparation script requires an internet connection. Launching the app uses the prepared package data and does not read an external CSV file.
 
 ## Licence and attribution
 
 Package code is provided under the MIT licence; see `LICENSE.md`.
 
-The data originate from Baltimore Healthy Harbor / Mr. Trash Wheel
-and are distributed through TidyTuesday. Source information is
-preserved in the dataset documentation. The code licence does not
-replace the source data's terms.
+The data originate from Baltimore Healthy Harbor / Mr. Trash Wheel and are distributed through TidyTuesday. Source information is preserved in the dataset documentation. The code licence does not replace the source data's terms.
 
 ## AI-use declaration
 
-ChatGPT assisted with planning the package structure, drafting and
-explaining the R and Shiny code, and drafting documentation.
-I take responsibility for the final code, results and documentation.
+ChatGPT assisted with planning the package structure, explaining the R and Shiny code, designing the app layout and CSS, debugging, and drafting documentation. I take responsibility for the final code, results and documentation.

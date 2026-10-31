@@ -10,7 +10,6 @@ collections <- syinexplore::trash_items
 wheel_choices <- sort(unique(collections$name))
 year_limits <- range(collections$year)
 
-# Reader-friendly labels for the source categories.
 trash_labels <- c(
   plastic_bottles = "Plastic bottles",
   polystyrene = "Foam items",
@@ -27,6 +26,8 @@ ui <- page_sidebar(
 
   theme = bs_theme(
     version = 5,
+    bg = "#F5F7F5",
+    fg = "#203C39",
     primary = "#176B70"
   ),
 
@@ -38,7 +39,20 @@ ui <- page_sidebar(
   ),
 
   sidebar = sidebar(
-    title = "Choose collection records",
+    title = "Choose your records",
+    width = 290,
+    bg = "#FFFFFF",
+    class = "filter-sidebar",
+
+    p(
+      class = "sidebar-intro",
+      "Choose sites and years to compare the rubbish collected."
+    ),
+
+    h3(
+      class = "filter-heading",
+      "1. Collection sites"
+    ),
 
     selectInput(
       "wheels",
@@ -49,13 +63,18 @@ ui <- page_sidebar(
     ),
 
     helpText(
-      "Choose one or more collection devices.",
-      "Select several to compare them in separate chart panels."
+      "Choose one or more devices.",
+      "Each has its own chart panel."
+    ),
+
+    h3(
+      class = "filter-heading",
+      "2. Collection years"
     ),
 
     sliderInput(
       "years",
-      "Collection years",
+      "Year range",
       min = year_limits[1],
       max = year_limits[2],
       value = c(2022, 2023),
@@ -64,28 +83,80 @@ ui <- page_sidebar(
     ),
 
     helpText(
-      "Move the two handles to choose the first and last years.",
+      "Move both handles to set the first and last years.",
       "Both end years are included. Results update automatically."
     ),
 
-    helpText(
-      "Years refer to when rubbish was collected.",
-      "Changing the years changes the records used in the averages."
+    div(
+      class = "sidebar-note",
+      strong("A useful starting point"),
+
+      p(
+        "Try Mister Trash Wheel in 2022–2023,",
+        "then change the years or add another device."
+      )
     )
   ),
 
   div(
     class = "app-intro",
 
-    h2(
-      "Which rubbish types have the highest average counts",
-      "per collection?"
+    div(
+      class = "intro-label",
+      "BALTIMORE WATERWAYS"
+    ),
+
+    h2("What rubbish turns up in each collection?"),
+
+    p(
+      class = "intro-summary",
+      "Compare the average estimated item counts for seven rubbish types",
+      "at selected Trash Wheels and times."
     ),
 
     p(
+      class = "audience-note",
       "For environmental volunteers and readers interested in",
-      "cleaner waterways. Compare estimated item counts at",
-      "selected Baltimore Trash Wheels and times."
+      "cleaner waterways."
+    )
+  ),
+
+  layout_columns(
+    fill = FALSE,
+    fillable = FALSE,
+    class = "summary-grid",
+
+    value_box(
+      title = "Devices with records",
+      value = textOutput("device_total"),
+
+      p("Out of the devices you selected."),
+
+      fill = FALSE,
+      theme = "light",
+      class = "summary-box"
+    ),
+
+    value_box(
+      title = "Collection records",
+      value = textOutput("collection_total"),
+
+      p("Each collection counted once per device."),
+
+      fill = FALSE,
+      theme = "light",
+      class = "summary-box"
+    ),
+
+    value_box(
+      title = "Years selected",
+      value = textOutput("year_total"),
+
+      p("Both end years are included."),
+
+      fill = FALSE,
+      theme = "light",
+      class = "summary-box"
     )
   ),
 
@@ -95,7 +166,6 @@ ui <- page_sidebar(
     h3("What your selection shows"),
 
     textOutput("selection_note"),
-
     textOutput("takeaway"),
 
     div(
@@ -104,147 +174,193 @@ ui <- page_sidebar(
     )
   ),
 
-  card(
-    fill = FALSE,
-    class = "result-card",
+  div(
+    class = "results-section",
 
-    card_header(
-      "Compare rubbish categories",
-      class = "section-heading"
-    ),
+    navset_card_tab(
+      id = "results_view",
+      selected = "compare",
 
-    p(
-      "Longer bars mean more estimated items per recorded collection.",
-      "Each panel shows one Trash Wheel, using the same horizontal scale."
-    ),
+      wrapper = function(...) {
+        card_body(
+          ...,
+          fillable = FALSE,
+          fill = FALSE
+        )
+      },
 
-    div(
-      class = "plot-wrap",
+      nav_panel(
+        "Compare categories",
+        value = "compare",
 
-      plotOutput(
-        "trash_plot",
-        height = "650px"
+        h3(
+          class = "panel-heading",
+          "Average items per collection"
+        ),
+
+        p(
+          class = "reading-guide",
+          "Longer bars mean more estimated items per recorded collection.",
+          "Each panel shows one Trash Wheel,",
+          "using the same horizontal scale."
+        ),
+
+        div(
+          class = "plot-wrap",
+
+          plotOutput(
+            "trash_plot",
+            height = "650px"
+          )
+        ),
+
+        p(
+          class = "chart-note",
+          "'Not recorded' means no item counts were reported",
+          "for that category in this selection.",
+          "It does not mean zero."
+        )
+      ),
+
+      nav_panel(
+        "Check the values",
+        value = "values",
+
+        h3(
+          class = "panel-heading",
+          "Values and reporting coverage"
+        ),
+
+        p(
+          class = "reading-guide",
+          "Use Mean items to compare categories.",
+          "Check Recorded collections before comparing means:",
+          "some categories have fewer reported counts."
+        ),
+
+        div(
+          class = "table-wrap",
+          tableOutput("trash_table")
+        ),
+
+        p(
+          class = "chart-note",
+          "Collection counts repeat across categories.",
+          "Do not add category rows together",
+          "to count distinct collections."
+        )
       )
-    ),
-
-    p(
-      class = "chart-note",
-      "'Not recorded' means no item counts were reported for that",
-      "category in this selection. It does not mean zero."
     )
   ),
 
-  card(
+  layout_columns(
     fill = FALSE,
-    class = "result-card",
+    fillable = FALSE,
+    class = "guide-grid",
 
-    card_header(
-      "Check the values and reporting coverage",
-      class = "section-heading"
+    card(
+      fill = FALSE,
+      class = "guide-card",
+
+      card_header("Read the fields"),
+
+      tags$dl(
+        tags$dt("Trash Wheel"),
+
+        tags$dd(
+          "The device collecting rubbish from a Baltimore waterway."
+        ),
+
+        tags$dt("Rubbish type"),
+
+        tags$dd(
+          "One of seven source categories.",
+          "'Foam items' is polystyrene."
+        ),
+
+        tags$dt("Collections"),
+
+        tags$dd(
+          "All selected records for that category,",
+          "including missing counts."
+        ),
+
+        tags$dt("Recorded collections"),
+
+        tags$dd(
+          "Selected records with a reported item count."
+        ),
+
+        tags$dt("Mean items"),
+
+        tags$dd(
+          "The average estimated count among recorded collections.",
+          "Missing counts are excluded, not treated as zero."
+        )
+      )
     ),
 
-    div(
-      class = "table-wrap",
-      tableOutput("trash_table")
-    ),
+    card(
+      fill = FALSE,
+      class = "guide-card limits-card",
 
-    p(
-      "Use Mean items to compare categories.",
-      "Check Recorded collections before comparing means:",
-      "some categories have fewer reported counts than others."
+      card_header("Keep the limits in mind"),
+
+      p("Counts are estimates based on sampling."),
+
+      p(
+        "The means describe selected recorded collections,",
+        "not daily collection rates or all rubbish in the water."
+      ),
+
+      p(
+        "Trash Wheels have different collection histories",
+        "and reporting coverage.",
+        "A higher mean does not by itself show a more polluted location",
+        "or a better-performing machine."
+      ),
+
+      p(
+        paste0(
+          "This historical snapshot covers ",
+          year_limits[1],
+          " to ",
+          year_limits[2],
+          ". It does not show current collection totals."
+        )
+      )
     )
   ),
 
   div(
-    class = "methods-note",
+    class = "source-note",
 
-    h3("What the fields mean"),
+    strong("Data sources: "),
 
-    tags$ul(
-      tags$li(
-        strong("Trash Wheel: "),
-        "the named device collecting rubbish from a Baltimore waterway."
+    a(
+      "TidyTuesday, 5 March 2024",
+      href = paste0(
+        "https://github.com/rfordatascience/tidytuesday/",
+        "tree/main/data/2024/2024-03-05"
       ),
-
-      tags$li(
-        strong("Rubbish type: "),
-        "one of seven categories recorded by the source.",
-        "'Foam items' is the source's polystyrene category."
-      ),
-
-      tags$li(
-        strong("Collections: "),
-        "all selected collection records for that category,",
-        "including records with a missing count."
-      ),
-
-      tags$li(
-        strong("Recorded collections: "),
-        "selected records with a reported item count."
-      ),
-
-      tags$li(
-        strong("Mean items: "),
-        "the average estimated item count among recorded collections.",
-        "Missing counts are excluded rather than treated as zero."
-      )
+      target = "_blank",
+      rel = "noopener noreferrer"
     ),
 
-    p(
-      "Collection counts repeat across rubbish categories.",
-      "Do not add category rows together to count distinct collections."
-    ),
+    " · ",
 
-    h3("Keep in mind"),
-
-    p(
-      "Counts are estimates based on sampling.",
-      "The means describe selected recorded collections,",
-      "not daily collection rates or all rubbish in the water."
-    ),
-
-    p(
-      "Trash Wheels have different collection histories and reporting",
-      "coverage. A higher mean does not by itself show a more polluted",
-      "location or a better-performing machine."
-    ),
-
-    p(
-      paste0(
-        "This historical snapshot covers ",
-        year_limits[1],
-        " to ",
-        year_limits[2],
-        ". It does not show current collection totals."
-      )
-    ),
-
-    p(
-      "Sources: ",
-
-      a(
-        "TidyTuesday, 5 March 2024",
-        href = paste0(
-          "https://github.com/rfordatascience/tidytuesday/",
-          "tree/main/data/2024/2024-03-05"
-        ),
-        target = "_blank"
-      ),
-
-      "; original data from ",
-
-      a(
-        "Baltimore Healthy Harbor / Mr. Trash Wheel",
-        href = "https://www.mrtrashwheel.com/",
-        target = "_blank"
-      )
+    a(
+      "Baltimore Healthy Harbor / Mr. Trash Wheel",
+      href = "https://www.mrtrashwheel.com/",
+      target = "_blank",
+      rel = "noopener noreferrer"
     )
   )
 )
 
 server <- function(input, output, session) {
 
-  # One shared calculation supplies every output.
+  # One shared calculation supplies the outputs.
   summary_data <- reactive({
 
     validate(
@@ -263,6 +379,63 @@ server <- function(input, output, session) {
       data = collections,
       wheels = input$wheels,
       years = input$years
+    )
+  })
+
+  output$device_total <- renderText({
+
+    if (
+      length(input$wheels) == 0 ||
+      length(input$years) != 2
+    ) {
+      return("—")
+    }
+
+    selected <- summary_data()
+
+    paste(
+      length(unique(selected$name)),
+      "of",
+      length(input$wheels)
+    )
+  })
+
+  output$collection_total <- renderText({
+
+    if (
+      length(input$wheels) == 0 ||
+      length(input$years) != 2
+    ) {
+      return("—")
+    }
+
+    # Keep one collection count per device.
+    # Category rows repeat that same count.
+    counts <- summary_data() |>
+      distinct(name, collections)
+
+    format(
+      sum(counts$collections),
+      big.mark = ",",
+      scientific = FALSE,
+      trim = TRUE
+    )
+  })
+
+  output$year_total <- renderText({
+
+    if (length(input$years) != 2) {
+      return("—")
+    }
+
+    if (input$years[1] == input$years[2]) {
+      return(as.character(input$years[1]))
+    }
+
+    paste(
+      input$years[1],
+      input$years[2],
+      sep = "–"
     )
   })
 
@@ -341,9 +514,11 @@ server <- function(input, output, session) {
 
     message <- "Means use reported counts only."
 
-    if (any(
-      selected$recorded_collections < selected$collections
-    )) {
+    if (
+      any(
+        selected$recorded_collections < selected$collections
+      )
+    ) {
       message <- paste(
         message,
         "Some category counts are missing.",
@@ -391,7 +566,10 @@ server <- function(input, output, session) {
 
     ggplot(
       plot_data,
-      aes(x = mean_count, y = trash_type)
+      aes(
+        x = mean_count,
+        y = trash_type
+      )
     ) +
       geom_col(
         fill = "#176B70",
@@ -401,15 +579,20 @@ server <- function(input, output, session) {
       geom_text(
         data = plot_data |>
           filter(is.na(mean_count)),
+
         aes(
           x = 0,
           label = "Not recorded"
         ),
+
         hjust = 0,
         size = 3,
         colour = "#52605D"
       ) +
-      facet_wrap(~name, ncol = 2) +
+      facet_wrap(
+        ~name,
+        ncol = 2
+      ) +
       scale_y_discrete(
         labels = trash_labels,
         drop = FALSE
@@ -428,7 +611,9 @@ server <- function(input, output, session) {
         x = "Estimated items per recorded collection",
         y = NULL
       ) +
-      theme_minimal(base_size = 13) +
+      theme_minimal(
+        base_size = 13
+      ) +
       theme(
         panel.grid.major.y = element_blank(),
         panel.grid.minor = element_blank(),
@@ -449,7 +634,10 @@ server <- function(input, output, session) {
 
     selected |>
       mutate(
-        trash_type = unname(trash_labels[trash_type]),
+        trash_type = unname(
+          trash_labels[trash_type]
+        ),
+
         mean_count = round(mean_count, 1)
       ) |>
       rename(
@@ -459,6 +647,7 @@ server <- function(input, output, session) {
         "Recorded collections" = recorded_collections,
         "Mean items" = mean_count
       )
+
   },
   rownames = FALSE,
   digits = 1,
