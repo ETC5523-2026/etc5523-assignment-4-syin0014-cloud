@@ -91,18 +91,38 @@
 <p>To stop the app in RStudio, click Stop in the Console or press Esc.</p>
 </section><section class="level2"><h2 id="choose-collection-records">Choose collection records<a class="anchor" aria-label="anchor" href="#choose-collection-records"></a>
 </h2>
+<p>Use the controls in the sidebar:</p>
 <ul>
 <li>
 <strong>Trash Wheels:</strong> choose one or more collection devices. Selecting several shows them in separate chart panels.</li>
 <li>
-<strong>Collection years:</strong> move the two slider handles to choose the first and last years. Both end years are included.</li>
+<strong>Year range:</strong> move the two slider handles to choose the first and last years. Both end years are included.</li>
 </ul>
 <p>Results update automatically when either selection changes.</p>
 <p>Start with Mister Trash Wheel and 2022–2023. Then change the year range to explore whether the average counts and leading rubbish categories change. Select another Trash Wheel to compare its records.</p>
+</section><section class="level2"><h2 id="read-the-summary-cards">Read the summary cards<a class="anchor" aria-label="anchor" href="#read-the-summary-cards"></a>
+</h2>
+<p>The three cards describe the current selection:</p>
+<ul>
+<li>
+<strong>Devices with records:</strong> the number of selected devices with matching collection records, out of all devices selected.</li>
+<li>
+<strong>Collection records:</strong> the number of matching collections. Each collection is counted once per device, rather than once for each rubbish category.</li>
+<li>
+<strong>Years selected:</strong> the chosen year or year range.</li>
+</ul>
+<p>For example, “1 of 2” means that two devices were selected but only one has collection records in the chosen period.</p>
+<p>A collection record does not necessarily contain a count for every rubbish category. Check the table for reporting coverage.</p>
 </section><section class="level2"><h2 id="read-the-results">Read the results<a class="anchor" aria-label="anchor" href="#read-the-results"></a>
 </h2>
-<p>The text above the chart identifies the rubbish categories with the highest mean counts for each selected Trash Wheel.</p>
-<p>Longer bars represent higher estimated item counts per recorded collection. The chart panels use the same horizontal scale.</p>
+<p>The <strong>What your selection shows</strong> section identifies the rubbish categories with the highest mean counts for each selected Trash Wheel. If categories share the highest mean, they are all included.</p>
+<p>Use <strong>Compare categories</strong> to view the chart and <strong>Check the values</strong> to view the table. Both tabs use the same selected records.</p>
+<section class="level3"><h3 id="compare-categories">Compare categories<a class="anchor" aria-label="anchor" href="#compare-categories"></a>
+</h3>
+<p>Longer bars represent higher estimated item counts per recorded collection. Each panel shows one Trash Wheel, and the panels use the same horizontal scale.</p>
+<p>“Not recorded” means no item counts were reported for that category in the selection. It does not mean zero.</p>
+</section><section class="level3"><h3 id="check-the-values">Check the values<a class="anchor" aria-label="anchor" href="#check-the-values"></a>
+</h3>
 <p>The table contains:</p>
 <ul>
 <li>
@@ -117,9 +137,11 @@
 <strong>Mean items:</strong> the average estimated item count among those recorded collections.</li>
 </ul>
 <p>Check Recorded collections before comparing means, because reporting coverage can differ across categories.</p>
-<p>“Not recorded” means no counts were reported for that group. It does not mean zero. Missing counts are excluded from the mean.</p>
+<p>Collections and Recorded collections are equal when no item counts are missing for that category in the selected records. Changing the years can change both numbers while they remain equal.</p>
+<p>For example, Gwynnda Trash Wheel in 2022–2023 has 171 collection records for wrappers, but only 103 have a reported wrapper count. The mean uses those 103 reported counts.</p>
+<p>Missing counts are excluded from the mean, rather than treated as zero. If all counts in a group are missing, the table shows “Not recorded” for its mean.</p>
 <p>Collection counts repeat across rubbish categories. Do not add the category rows together to count distinct collections.</p>
-</section><section class="level2"><h2 id="reproduce-a-summary-in-r">Reproduce a summary in R<a class="anchor" aria-label="anchor" href="#reproduce-a-summary-in-r"></a>
+</section></section><section class="level2"><h2 id="reproduce-a-summary-in-r">Reproduce a summary in R<a class="anchor" aria-label="anchor" href="#reproduce-a-summary-in-r"></a>
 </h2>
 <p>You can use the package’s summary function without opening the app:</p>
 <div class="cell">
@@ -195,12 +217,14 @@
 </div>
 </div>
 <p>The rows are ordered from the highest mean to the lowest. The first row therefore identifies the category with the highest average count for this selection.</p>
+<p>For Mister Trash Wheel in 2022–2023, cigarette butts have the highest mean, at about 3,505 estimated items per recorded collection.</p>
 <p>These values describe items per recorded collection. They are not yearly totals or measures of environmental harm.</p>
 </section><section class="level2"><h2 id="what-if-there-are-no-matching-records">What if there are no matching records?<a class="anchor" aria-label="anchor" href="#what-if-there-are-no-matching-records"></a>
 </h2>
-<p>If you remove all Trash Wheels, the app asks you to select at least one.</p>
+<p>If you remove all Trash Wheels, the app asks you to select at least one. The device and collection cards show a dash until you make a selection.</p>
 <p>To try a selection with no records, choose Gwynnda Trash Wheel and 2014–2015. The app explains that no records match and suggests changing the years or selecting another device.</p>
-<p>If only some selected devices have records, the coverage message identifies those without records. No matching records does not mean that the device collected zero rubbish.</p>
+<p>If only some selected devices have records, the coverage message identifies those without records.</p>
+<p>No matching records does not mean that the device collected zero rubbish.</p>
 </section><section class="level2"><h2 id="keep-the-limits-in-mind">Keep the limits in mind<a class="anchor" aria-label="anchor" href="#keep-the-limits-in-mind"></a>
 </h2>
 <p>Item counts are estimates based on sampling.</p>

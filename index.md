@@ -18,8 +18,8 @@ The app helps users investigate this question:
 **At selected collection sites and times, which rubbish categories have
 the highest estimated item counts per recorded collection?**
 
-Users can select Trash Wheels and years. A comparison plot and summary
-table update using the same selected records.
+Users can select Trash Wheels and years. Summary cards, written results,
+a comparison chart and a table update using the selected records.
 
 ## Data
 
@@ -61,12 +61,32 @@ library(syinexplore)
 run_app()
 ```
 
-Choose one or more Trash Wheels and a range of years. Longer bars
-indicate higher estimated item counts per recorded collection.
+Choose one or more Trash Wheels and a year range. Both end years are
+included, and results update automatically.
+
+The three summary cards show:
+
+- **Devices with records:** how many selected devices have matching
+  collection records.
+- **Collection records:** the number of matching collections, counting
+  each collection once per device.
+- **Years selected:** the chosen year or year range.
+
+Use **Compare categories** to view the chart and **Check the values** to
+view the table. Both tabs use the same selected records.
+
+Longer bars indicate higher estimated item counts per recorded
+collection. Chart panels use the same horizontal scale.
 
 The table reports all selected collection records, the number with a
-reported count, and the mean calculated from those reported counts. A
-missing mean indicates that no counts were reported for that group.
+reported item count, and the mean calculated from those reported counts.
+Collections and Recorded collections are equal when no counts are
+missing for that category.
+
+“Not recorded” means no item counts were reported for that group. It
+does not mean zero.
+
+To stop the app in RStudio, click Stop in the Console or press Esc.
 
 ## Use the summary function
 
@@ -85,6 +105,18 @@ summarise_data(
 filters the records and returns a summary for each selected Trash Wheel
 and rubbish category. The app uses this function.
 
+The result includes:
+
+- `name`: the Trash Wheel.
+- `trash_type`: the rubbish category.
+- `collections`: all selected collection records for that category.
+- `recorded_collections`: records with a reported item count.
+- `mean_count`: the mean estimated item count among recorded
+  collections.
+
+Missing counts are excluded from the mean. If all counts in a group are
+missing, its mean is `NA`.
+
 ## Reproduce the package data
 
 From the repository root, run:
@@ -94,9 +126,10 @@ From the repository root, run:
 source("data-raw/prepare_data.R")
 ```
 
-The script reads the specified TidyTuesday CSV file, cleans the column
-names, converts collection dates and reshapes item counts into a long
-table. It saves the result as `data/trash_items.rda`.
+The script reads the specified TidyTuesday CSV file, cleans column
+names, converts collection dates, selects the fields used by the app and
+reshapes item counts into a long table. It saves the result as
+`data/trash_items.rda`.
 
 Running the preparation script requires an internet connection.
 Launching the app uses the prepared package data and does not read an
@@ -113,6 +146,7 @@ data’s terms.
 
 ## AI-use declaration
 
-ChatGPT assisted with planning the package structure, drafting and
-explaining the R and Shiny code, and drafting documentation. I take
-responsibility for the final code, results and documentation.
+ChatGPT assisted with planning the package structure, explaining the R
+and Shiny code, designing the app layout and CSS, debugging, and
+drafting documentation. I take responsibility for the final code,
+results and documentation.
